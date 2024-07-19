@@ -1,38 +1,81 @@
-.App {
+*{
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: rgb(189, 255, 241);
+}
+
+.lista{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+}
+
+h1{
+  padding: 30px;
+  color: rgb(30, 65, 57);
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.novo-item-input{
+  outline: 0;
+  border: none;
+  width: 400px;
+  height: 40px;
+  background-color: white;
+  margin: 0px 20px 30px 0px;
+  padding-left: 10px;
+  border-radius: 8px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.botao-adicionar, .botao-excluir{
+  width: 80px;
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+  background-color: rgb(111, 219, 196);
+  color: rgb(30, 65, 57);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.botao-adicionar:hover, .botao-excluir:hover{
+  background-color: rgb(83, 163, 146);
+}
+
+.botao-adicionar:active, .botao-excluir:active{
+  transform: translateY(2px);
+}
+
+.item{
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  gap: 20px;
 }
 
-.App-link {
-  color: #61dafb;
+.item-input{
+  outline: 0;
+  border: none;
+  width: 500px;
+  height: 40px;
+  background-color: white;
+  padding-left: 10px;
+  border-radius: 8px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@media screen and (max-width: 430px){
+  .novo-item-input{
+    width: 200px;
   }
-  to {
-    transform: rotate(360deg);
+
+  .item-input{
+    width: 300px;
   }
 }

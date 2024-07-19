@@ -1,70 +1,132 @@
-# Getting Started with Create React App
+# Documentação
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+__1 -__ No GitBash, é criada a pasta do projeto e instalada a biblioteca do React.
+```
+$ npx create-react-app lista-interativa
+```
+__2 -__ Acessar a pasta criada.
+```
+$ cd lista-interativa
+```
+__3 -__ Abrir o VSCode.
+```
+$ code .
+```
+__4 -__ Iniciar o React, abrindo no navegador.
+```
+$ npm start
+```
+__5 -__ Deletar os arquivos desnecessários ("App.test.js", "logo.svg", "reportWebVitals.js" e "setupTest.js") e as linhas que os referenciam nos arquivos "App.js" e "index.js".
 
-## Available Scripts
+__6 -__ Em seguida, é criada a pasta "components" dentro da pasta "src".
 
-In the project directory, you can run:
+__7 -__ Criar o componente "ItemLista.jsx" dentro da pasta "components" e adicionar o seguinte código:
+```
+import React from 'react';
 
-### `npm start`
+const ItemLista = ({ onChange, onDelete, value }) => {
+  return (
+    <div className="item">
+      <input
+        className="item-input"
+        value={value}
+        onChange={onChange}
+      />
+      <button className='botao-excluir' onClick={onDelete}>Excluir</button>
+    </div>
+  );
+};
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+export default ItemLista;
+```
+Esse componente irá permitir que os itens sejam editados e excluídos no objeto pai. Para isso, são criados dois props "onChange" e "onDelete", assim como uma prop para receber o nome da presente tarefa: "value".
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+__8 -__ Criar o componente "NovoItemLista.jsx", também dentro da pasta "components", e adicionar o seguinte código:
+```
+import React, { useState } from 'react';
+const NovoItem = ({ onSubmit }) => {
 
-### `npm test`
+  const [newItem, setNewItem] = useState('');
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  function setNewTask({target}) {
+    setNewItem(target.value);
+  }
 
-### `npm run build`
+  function submit(e) {
+    e.preventDefault();
+    onSubmit(newItem);
+  }
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  return (
+    <div>
+      <form onSubmit={submit}>
+        <input
+          className="novo-item-input"
+          placeholder="Digite uma nova atividade..."
+          onChange={setNewTask}
+        />
+        <button type="submit" className='botao-adicionar'>
+          Adicionar
+        </button>
+      </form>
+    </div>
+  )
+};
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+export default NovoItem;
+```
+Esse componente pega um valor com o input, o armazena no useState e o passa para o objeto pai. O "preventDefault" é utilizado para previnir que a página recarregue após o formulário ser enviado.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+__9 -__ Alterar o "App.js", ou seja, o objeto pai:
+```
+import React, { useState } from 'react';
+import './App.css';
+import NovoItem from './components/NovoItemLista';
+import ItemLista from './components/ItemLista';
 
-### `npm run eject`
+const App = () => {
+  const [tasks, setTasks] = useState([]);
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+  function addNewTask(task) {
+    const itensCopy = Array.from(tasks);
+    itensCopy.push({ id: tasks.length, value: task });
+    setTasks(itensCopy);
+  }
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+  function updateTask({ target }, index) {
+    const itensCopy = Array.from(tasks);
+    itensCopy.splice(index, 1, { id: index, value: target.value });
+    setTasks(itensCopy);
+  }
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+  function deleteTask(index) {
+    const itensCopy = Array.from(tasks);
+    itensCopy.splice(index, 1);
+    setTasks(itensCopy);
+  }
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+  return (
+    <div className="App">
+      <div className="lista">
+      <h1>Lista de Atividades de Lazer</h1>
+        <NovoItem onSubmit={addNewTask} />
+        {tasks.map(({ id, value }, index) => (
+          <ItemLista 
+            key={id}
+            value={value}
+            onChange={(event) => updateTask(event, index)}
+            onDelete={() => deleteTask(index)}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
 
-## Learn More
+export default App;
+```
+São declaradas três novas funções: addNewTask, updateTask e deleteTask. Em cada uma das funções, o Array.from() cria uma cópia dos valores do state e, através do push ou splice os altera, para depois atualizar o state diretamente com a cópia alterada. Isso é feito para evitar que o React não detecte a mudança corretamente por conta da alteração diretamente no state.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* __Adicionar item__: É recebido o valor através do onSubmit do componente NovoItemLista e então criado um Array cópia das atividades já na lista. Em seguida, é usado o push (adiciona um ou mais elementos ao fim de um array) e utilizado o valor do comprimento do Array cópia para criar o id do novo item.
+* __Editar item__: Utilizando o index como parâmetro de qual elemento editar, é usado o splice (altera o conteúdo de um Array através da remoção ou substituição de elementos existentes e/ou adicionando novos elementos em suas posições).
+* __Deletar item__: Similar ao processo de edição, é utilizado o splice. Porém, é omitido o último parâmetro, deletando o conteúdo ao invés de o substituir por outro valor.
